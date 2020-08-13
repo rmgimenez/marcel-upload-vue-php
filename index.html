@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"
+      integrity="sha512-VZ6m0F78+yo3sbu48gElK4irv2dzPoep8oo9LEjxviigcnnnNvnTOJRSrIhuFk68FMLOpiNz+T77nNY89rnWDg=="
+      crossorigin="anonymous"
+    ></script>
+  </head>
+
+  <body>
+    <div id="myapp">
+      <input type="file" id="file" ref="file" />
+
+      <button type="button" @click="uploadFile()">Upload file</button>
+    </div>
+
+    <script>
+      var app = new Vue({
+        el: "#myapp",
+        data: {
+          file: "",
+          endereco: "http://localhost/upload-img-marcel/uploads/",
+        },
+        methods: {
+          uploadFile: function () {
+            this.file = this.$refs.file.files[0];
+
+            let formData = new FormData();
+            formData.append("file", this.file);
+
+            let endereco = this.endereco;
+
+            axios
+              .post("upload.php", formData, {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              })
+              .then(function (response) {
+                if (!response.data) {
+                  alert("File not uploaded.");
+                } else {
+                    let endereco_completo = endereco + response.data;
+                  alert(`File uploaded successfully. Nome do Arquivo: ${endereco_completo}`);
+                }
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
